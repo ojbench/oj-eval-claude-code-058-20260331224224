@@ -1,0 +1,4 @@
+Bulbasaur 1 grass
+Charmander 4 fire
+Squirtle 7 water
+Pikachu 25 electric

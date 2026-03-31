@@ -17,7 +17,7 @@ protected:
     std::string message;
 
 public:
-    explicit BasicException(const char *_message) : message(_message) {}
+    explicit BasicException(const std::string& _message) : message(_message) {}
 
     virtual const char *what() const {
         return message.c_str();
@@ -26,12 +26,12 @@ public:
 
 class ArgumentException : public BasicException {
 public:
-    explicit ArgumentException(const char *_message) : BasicException(_message) {}
+    explicit ArgumentException(const std::string& _message) : BasicException(_message) {}
 };
 
 class IteratorException : public BasicException {
 public:
-    explicit IteratorException(const char *_message) : BasicException(_message) {}
+    explicit IteratorException(const std::string& _message) : BasicException(_message) {}
 };
 
 // Pokemon structure
@@ -120,12 +120,14 @@ private:
     // Helper functions
     bool isValidName(const char* name) const {
         if (!name || name[0] == '\0') return false;
+        int len = 0;
         for (int i = 0; name[i] != '\0'; i++) {
             if (!((name[i] >= 'A' && name[i] <= 'Z') || (name[i] >= 'a' && name[i] <= 'z'))) {
                 return false;
             }
+            len++;
         }
-        return true;
+        return len > 0 && len <= 10;
     }
 
     std::vector<std::string> parseTypes(const char* types) const {
@@ -192,16 +194,14 @@ public:
     bool pokeAdd(const char *name, int id, const char *types) {
         // Validate name
         if (!isValidName(name)) {
-            std::string msg = std::string("Argument Error: PM Name Invalid (") + name + ")";
-            throw ArgumentException(msg.c_str());
+            throw ArgumentException(std::string("Argument Error: PM Name Invalid (") + name + ")");
         }
 
         // Validate and parse types
         std::vector<std::string> typeList = parseTypes(types);
         for (const auto& type : typeList) {
             if (!typeChart.isValidType(type)) {
-                std::string msg = std::string("Argument Error: PM Type Invalid (") + type + ")";
-                throw ArgumentException(msg.c_str());
+                throw ArgumentException(std::string("Argument Error: PM Type Invalid (") + type + ")");
             }
         }
 
@@ -244,8 +244,7 @@ public:
         std::vector<std::string> searchTypes = parseTypes(types);
         for (const auto& type : searchTypes) {
             if (!typeChart.isValidType(type)) {
-                std::string msg = std::string("Argument Error: PM Type Invalid (") + type + ")";
-                throw ArgumentException(msg.c_str());
+                throw ArgumentException(std::string("Argument Error: PM Type Invalid (") + type + ")");
             }
         }
 
